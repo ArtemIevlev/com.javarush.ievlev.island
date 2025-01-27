@@ -1,19 +1,21 @@
 package entity;
 
-import controllers.Config;
-import entity.abstract_classes.GameObject;
-import service.GameObjectFactory;
+import util.Config;
+import entity.units.Unit;
+import service.UnitFactory;
 
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Arrays;
+import java.util.concurrent.*;
 
 public class Island {
-    public final Tile[][] map = new Tile[Config.ISLAND_HIGH][Config.ISLAND_WIDTH];
-    public final ThreadLocalRandom random = ThreadLocalRandom.current();
+    private final int islandHigh;
+    private final int islandWidth;
+    public final Tile[][] map;
 
-    public Island() {
-        this.initial();
+    public Island(int islandWidth, int islandHigh) {
+        this.islandWidth = islandWidth;
+        this.islandHigh = islandHigh;
+        map = new Tile[islandHigh][islandWidth];
     }
 
     /**
@@ -23,27 +25,29 @@ public class Island {
         for (int high = 0; high < map.length; high++) {
             for (int width = 0; width < map[high].length; width++) {
                 map[high][width] = new Tile(high,width);
-                initialObjects(map[high][width]);
+                initialUnits(map[high][width]);
             }
         }
     }
-    private void initialObjects(Tile current){
-        Map<Class<? extends GameObject>, Integer> counts = current.getCounts();
-        List<GameObject> objectList = current.getObjectList();
-        for (Class<? extends GameObject> aClass : Config.LIST_OF_GAME_OBJECT_TYPE) {
-            int i = random.nextInt(Config.MAX_OBJECTS_FOR_INITIAL);
-            for (int j = 0; j<i; j++){
-                GameObject object = GameObjectFactory.build(aClass, current);
-                if (counts.containsKey(aClass)){
-                    if (counts.get(aClass) > object.getMaxOnTile()){
-                        break;
-                    }
-                    counts.put(aClass, counts.get(aClass) + 1);
-                }else {
-                    counts.put(aClass, 1);
+
+    private void initialUnits(Tile current){
+        ThreadLocalRandom random = current.getRandom();
+        for (Class<? extends Unit> unitClass : Config.LIST_OF_GAME_UNITS_TYPE) {
+            int max = random.nextInt(Config.MAX_OBJECTS_FOR_INITIAL);
+            for (int i = 0; i < max; i++){
+                Unit unit = UnitFactory.buildUnit(unitClass);
+                if (!current.addUnit(unit)) {
+                    break;
                 }
-                objectList.add(object);
             }
         }
+    }
+    @Override
+    public String toString() {
+        return "Island{" +
+                "islandHigh=" + islandHigh +
+                ", islandWidth=" + islandWidth +
+                ", map=" + Arrays.deepToString(map) +
+                '}';
     }
 }
