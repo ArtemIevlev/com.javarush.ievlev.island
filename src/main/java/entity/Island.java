@@ -1,6 +1,6 @@
 package entity;
 
-import util.Config;
+import settings.Config;
 import entity.units.Unit;
 import service.UnitFactory;
 

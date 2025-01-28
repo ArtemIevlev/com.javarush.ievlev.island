@@ -1,7 +1,6 @@
 package entity;
 
 import entity.units.Unit;
-import util.Config;
 
 import java.util.List;
 import java.util.Map;
@@ -31,6 +30,7 @@ public class Tile  {
      */
     public boolean addUnit(Unit unit){
         if (countsOfUnits.containsKey(unit.getClass())){
+            if (countsOfUnits.get(unit.getClass()) >= unit.getSettings().getMaxOnTile()) return false;
             countsOfUnits.put(unit.getClass(), countsOfUnits.get(unit.getClass()) + 1);
         }else {
             countsOfUnits.put(unit.getClass(), 1);
