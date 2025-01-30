@@ -3,9 +3,9 @@ package entity;
 import settings.Config;
 import entity.units.Unit;
 import service.UnitFactory;
+import settings.UnitSettings;
 
 import java.util.Arrays;
-import java.util.concurrent.*;
 
 public class Island {
     private final int islandHigh;
@@ -31,10 +31,9 @@ public class Island {
     }
 
     private void initialUnits(Tile current){
-        ThreadLocalRandom random = current.getRandom();
         for (Class<? extends Unit> unitClass : Config.LIST_OF_GAME_UNITS_TYPE) {
-            int max = random.nextInt(Config.MAX_OBJECTS_FOR_INITIAL);
-            for (int i = 0; i < max; i++){
+            int maxOnTile = (int) (UnitSettings.UNIT_SETTINGS.get(unitClass).getMaxOnTile()  * 0.4d);
+            for (int i = 0; i < maxOnTile; i++){
                 Unit unit = UnitFactory.buildUnit(unitClass);
                 if (!current.addUnit(unit)) {
                     break;

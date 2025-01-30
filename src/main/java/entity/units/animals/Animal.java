@@ -1,6 +1,5 @@
 package entity.units.animals;
 import entity.units.Unit;
-import entity.units.animals.predators.Fox;
 import interfeces.Eatable;
 import interfeces.Movable;
 import settings.Config;
@@ -44,7 +43,7 @@ public abstract class Animal extends Unit implements Eatable, Movable {
     public void eat(Unit unit) {
         if (isAlive()) {
             int i = getCurrentTile().getRandom().nextInt(100);
-            if (unit.isAlive() && i >= getSettings().chanceToEat(unit.getClass())) {
+            if (unit.isAlive() && i <= getSettings().chanceToEat(unit.getClass())) {
                 satiety += unit.getWeight();
                 unit.die();
                 if (satiety > getSettings().getMaxSatiety()) satiety = getSettings().getMaxSatiety();

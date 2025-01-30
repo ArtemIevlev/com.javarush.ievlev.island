@@ -7,17 +7,17 @@ import settings.Settings;
 
 public abstract class Unit implements Multiplying {
     private Settings settings;
-    private int weight;
+    private double weight;
     private Tile currentTile;
     private boolean isAlive = true;
 
     public Unit() {
     }
 
-    public int getWeight() {
+    public double getWeight() {
         return weight;
     }
-    protected void setWeight(int weight) {
+    protected void setWeight(double weight) {
         this.weight = weight;
     }
     public Tile getCurrentTile() {

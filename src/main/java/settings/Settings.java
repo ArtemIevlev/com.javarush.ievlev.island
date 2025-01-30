@@ -7,13 +7,13 @@ import java.util.Map;
 
 public class Settings {
     private final double maxSatiety;
-    private final int weight;
+    private final double weight;
     private final int maxSpeed;
     private final int maxOnTile;
     private final Map<Class<? extends Unit>, Integer> canEat = new HashMap<>();
     private final String img;
 
-    public Settings(double maxSatiety, int weight, int maxSpeed, int maxOnTile, String img) {
+    public Settings(double maxSatiety, double weight, int maxSpeed, int maxOnTile, String img) {
         this.maxSatiety = maxSatiety;
         this.weight = weight;
         this.maxSpeed = maxSpeed;
@@ -29,7 +29,7 @@ public class Settings {
     public int chanceToEat(Class<? extends Unit> eaten){
      return canEat.get(eaten);
     }
-    public int getWeight() {
+    public double getWeight() {
         return weight;
     }
 

@@ -14,8 +14,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Tile  {
     private final int high;
     private final int wight;
-    private List<Unit> unitList = new CopyOnWriteArrayList<>();
-    private Map<Class<? extends Unit>, Integer> countsOfUnits = new ConcurrentHashMap<>();
+    private final List<Unit> unitList = new CopyOnWriteArrayList<>();
+    private final Map<Class<? extends Unit>, Integer> countsOfUnits = new ConcurrentHashMap<>();
     private ThreadLocalRandom random = ThreadLocalRandom.current();
 
     public Tile(int high, int wight) {
@@ -40,8 +40,8 @@ public class Tile  {
         return true;
     }
     public boolean deleteUnit(Unit unit){
-        unitList.remove(unit);
-        countsOfUnits.put(unit.getClass(), countsOfUnits.get(unit.getClass())-1);
+        boolean remove = unitList.remove(unit);
+        if (remove) countsOfUnits.put(unit.getClass(), countsOfUnits.get(unit.getClass())-1);
         return true;
     }
 
