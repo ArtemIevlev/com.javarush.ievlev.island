@@ -1,4 +1,7 @@
 package entity.units.animals;
+import entity.Direction;
+import entity.Island;
+import entity.Tile;
 import entity.units.Unit;
 import interfeces.Eatable;
 import interfeces.Movable;
@@ -63,6 +66,7 @@ public abstract class Animal extends Unit implements Eatable, Movable {
                     break;
                 }
             }
+            move();
             multiply();
             reduceSatiety();
             if (satiety < getSettings().getMaxSatiety() / 4) die();
@@ -81,5 +85,58 @@ public abstract class Animal extends Unit implements Eatable, Movable {
 
     public double getSatiety() {
         return satiety;
+    }
+
+    @Override
+    public void move() {
+        if (isAlive()) {
+            for (int i = 0; i < currentSpeed; i++) {
+                moveToDirection(choseDirection());
+            }
+        }
+    }
+    private void moveToDirection(Direction direction){
+        Island currentIsland = getCurrentTile().getIsland();
+        Tile currentTile = getCurrentTile();
+        Tile newTile;
+        switch (direction){
+            case DOWN -> {
+                if (currentTile.getHigh() + 1 < currentIsland.getIslandHigh()){
+                    newTile = currentIsland.map[currentTile.getHigh()+1][currentTile.getWight()];
+                    currentTile.deleteUnit(this);
+                    newTile.addUnit(this);
+                }
+            }
+            case LEFT -> {
+                if (currentTile.getWight() - 1 >= 0){
+                    newTile = currentIsland.map[currentTile.getHigh()][currentTile.getWight()-1];
+                    currentTile.deleteUnit(this);
+                    newTile.addUnit(this);
+                }
+            }
+            case RIGHT -> {
+                if (currentTile.getWight() + 1 < currentIsland.getIslandWidth()){
+                    newTile = currentIsland.map[currentTile.getHigh()][currentTile.getWight()+ 1];
+                    currentTile.deleteUnit(this);
+                    newTile.addUnit(this);
+                }
+            }
+            case UP -> {
+                if (currentTile.getHigh() - 1 >= 0){
+                    newTile = currentIsland.map[currentTile.getHigh()-1][currentTile.getWight()];
+                    currentTile.deleteUnit(this);
+                    newTile.addUnit(this);
+                }
+            }
+        }
+    }
+    private Direction choseDirection(){
+        int i = getCurrentTile().getRandom().nextInt(4);
+        return switch (i){
+            case 0 -> Direction.UP;
+            case 1 -> Direction.RIGHT;
+            case 2 -> Direction.DOWN;
+            default -> Direction.LEFT;
+        };
     }
 }

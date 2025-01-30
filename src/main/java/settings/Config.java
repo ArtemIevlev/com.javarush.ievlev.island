@@ -12,7 +12,7 @@ public class Config {
     public static final int ISLAND_WIDTH = 5;
     public static final int ISLAND_HIGH = 5;
     public static final int TRYING_TO_FIND_FOOD = 10;
-    public static final int MAX_OBJECTS_FOR_INITIAL = 15;
+    public static final int SECONDS_PER_ROUND = 5;
     /**
      * Лист хранящий в себе список классов юнитов участвующих в симуляции
      */

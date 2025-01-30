@@ -31,7 +31,7 @@ public class IslandManager {
                     executorService.execute(taskQueue.poll());
                 }
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(1000 * Config.SECONDS_PER_ROUND);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }

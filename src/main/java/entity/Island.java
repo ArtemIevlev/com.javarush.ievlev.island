@@ -24,7 +24,7 @@ public class Island {
     public void initial(){
         for (int high = 0; high < map.length; high++) {
             for (int width = 0; width < map[high].length; width++) {
-                map[high][width] = new Tile(high,width);
+                map[high][width] = new Tile(high,width, this);
                 initialUnits(map[high][width]);
             }
         }
@@ -41,6 +41,15 @@ public class Island {
             }
         }
     }
+
+    public int getIslandHigh() {
+        return islandHigh;
+    }
+
+    public int getIslandWidth() {
+        return islandWidth;
+    }
+
     @Override
     public String toString() {
         return "Island{" +

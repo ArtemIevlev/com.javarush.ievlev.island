@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Класс описывающий сущность одной локации острова
@@ -14,13 +16,16 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Tile  {
     private final int high;
     private final int wight;
+    private final Island island;
     private final List<Unit> unitList = new CopyOnWriteArrayList<>();
     private final Map<Class<? extends Unit>, Integer> countsOfUnits = new ConcurrentHashMap<>();
     private ThreadLocalRandom random = ThreadLocalRandom.current();
+    private Lock lock = new ReentrantLock();
 
-    public Tile(int high, int wight) {
+    public Tile(int high, int wight, Island island) {
         this.high = high;
         this.wight = wight;
+        this.island = island;
     }
 
     /**
@@ -29,32 +34,65 @@ public class Tile  {
      * @return true - если юнит успешно добавлен, false - если их количество переполнено
      */
     public boolean addUnit(Unit unit){
-        if (countsOfUnits.containsKey(unit.getClass())){
-            if (countsOfUnits.get(unit.getClass()) >= unit.getSettings().getMaxOnTile()) return false;
-            countsOfUnits.put(unit.getClass(), countsOfUnits.get(unit.getClass()) + 1);
-        }else {
-            countsOfUnits.put(unit.getClass(), 1);
+        lock.lock();
+        try {
+            if (countsOfUnits.containsKey(unit.getClass())) {
+                if (countsOfUnits.get(unit.getClass()) >= unit.getSettings().getMaxOnTile()) return false;
+                countsOfUnits.put(unit.getClass(), countsOfUnits.get(unit.getClass()) + 1);
+            } else {
+                countsOfUnits.put(unit.getClass(), 1);
+            }
+            unitList.add(unit);
+            unit.setCurrentTile(this);
+            return true;
+        }finally {
+            lock.unlock();
         }
-        unitList.add(unit);
-        unit.setCurrentTile(this);
-        return true;
     }
     public boolean deleteUnit(Unit unit){
-        boolean remove = unitList.remove(unit);
-        if (remove) countsOfUnits.put(unit.getClass(), countsOfUnits.get(unit.getClass())-1);
-        return true;
+        lock.lock();
+        try {
+            boolean remove = unitList.remove(unit);
+            if (remove) countsOfUnits.put(unit.getClass(), countsOfUnits.get(unit.getClass())-1);
+            return true;
+        }finally {
+            lock.unlock();
+        }
+
     }
 
     public Map<Class<? extends Unit>, Integer> getCountsOfUnits() {
-        return countsOfUnits;
+        lock.lock();
+        try {
+            return countsOfUnits;
+        }finally {
+            lock.unlock();
+        }
     }
 
     public List<Unit> getUnitList() {
-        return unitList;
+        lock.lock();
+        try {
+            return unitList;
+        }finally {
+            lock.unlock();
+        }
     }
 
     public ThreadLocalRandom getRandom() {
         return random;
+    }
+
+    public int getHigh() {
+        return high;
+    }
+
+    public int getWight() {
+        return wight;
+    }
+
+    public Island getIsland() {
+        return island;
     }
 
     @Override
