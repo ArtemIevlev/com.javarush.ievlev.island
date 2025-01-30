@@ -70,8 +70,6 @@ public abstract class Animal extends Unit implements Eatable, Movable {
             multiply();
             reduceSatiety();
             if (satiety < getSettings().getMaxSatiety() / 4) die();
-        } else {
-            getCurrentTile().deleteUnit(this);
         }
     }
 

@@ -9,18 +9,21 @@ import settings.UnitSettings;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
 public class IslandManager {
-    private Island island;
-    private int countOfCycles;
-    private ExecutorService executorService;
-    public Queue<Task> taskQueue = new ConcurrentLinkedQueue<>();
+    private final Island island;
+    private final int countOfCycles;
+    private final ExecutorService executorService;
+    private final Queue<Task> taskQueue = new ConcurrentLinkedQueue<>();
+    private final IslandInformationManager informationManager;
 
     public IslandManager(Island island, int countOfCycles, ExecutorService executorService) {
         this.island = island;
         this.countOfCycles = countOfCycles;
         this.executorService = executorService;
+        informationManager = new IslandInformationManager(this.executorService, this.island);
     }
 
     public void live() {
@@ -36,8 +39,12 @@ public class IslandManager {
                     throw new RuntimeException(e);
                 }
                 taskQueue.clear();
-                writeInfo();
+                informationManager.writeNewRoundInfo();
             }
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         } finally {
             executorService.shutdown();
         }
@@ -49,20 +56,5 @@ public class IslandManager {
                 taskQueue.add(new Task(tile));
             }
         }
-    }
-    private void writeInfo(){
-        for (Class<? extends Unit> typeClass : Config.LIST_OF_GAME_UNITS_TYPE) {
-            int result = 0;
-            for (Tile[] tiles : island.map) {
-                for (Tile tile : tiles) {
-                    Map<Class<? extends Unit>, Integer> countsOfUnits = tile.getCountsOfUnits();
-                    if (countsOfUnits.get(typeClass) != null) {
-                        result += countsOfUnits.get(typeClass);
-                    }
-                }
-            }
-            System.out.print(UnitSettings.UNIT_SETTINGS.get(typeClass).getImg() + result + " ");
-        }
-        System.out.println();
     }
 }
