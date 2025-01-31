@@ -3,6 +3,8 @@ package settings;
 import entity.units.Unit;
 import entity.units.animals.herebivores.*;
 import entity.units.animals.predators.*;
+import entity.units.plants.Apple;
+import entity.units.plants.Flower;
 import entity.units.plants.Grass;
 import entity.units.plants.Rice;
 
@@ -28,6 +30,8 @@ public class UnitSettings {
     private final static Settings DUCK_SETTINGS = new Settings(0.15, 1, 4, 200, "\uD83E\uDD86");
     private final static Settings WARM_SETTINGS = new Settings(0, 0.15, 0, 1000, "\uD83D\uDC1B");
     private final static Settings RICE_SETTINGS = new Settings(0, 5, 0, 300, "\uD83C\uDF3E");
+    private final static Settings APPLE_SETTINGS = new Settings(0, 3, 0, 150, "\uD83C\uDF4E");
+    private final static Settings FLOWER_SETTINGS = new Settings(0, 4.5, 0, 250, "\uD83C\uDF3B");
 
 
     static {
@@ -92,5 +96,7 @@ public class UnitSettings {
         UNIT_SETTINGS.put(Duck.class, DUCK_SETTINGS);
         UNIT_SETTINGS.put(Worm.class, WARM_SETTINGS);
         UNIT_SETTINGS.put(Rice.class, RICE_SETTINGS);
+        UNIT_SETTINGS.put(Apple.class, APPLE_SETTINGS);
+        UNIT_SETTINGS.put(Flower.class, FLOWER_SETTINGS);
     }
 }

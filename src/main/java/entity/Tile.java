@@ -49,6 +49,14 @@ public class Tile  {
             lock.unlock();
         }
     }
+    public Unit getRandomUnit(){
+        lock.lock();
+        try {
+            return unitList.get(random.nextInt(unitList.size()));
+        } finally {
+            lock.unlock();
+        }
+    }
     public boolean deleteUnit(Unit unit){
         lock.lock();
         try {

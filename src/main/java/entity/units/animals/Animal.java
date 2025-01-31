@@ -58,11 +58,9 @@ public abstract class Animal extends Unit implements Eatable, Movable {
     public void live() {
         if(isAlive()) {
             for (int i = 0; i < Config.TRYING_TO_FIND_FOOD; i++) {
-                List<Unit> unitList = getCurrentTile().getUnitList();
-                int size = unitList.size();
-                int unitToEat = getCurrentTile().getRandom().nextInt(size);
-                if (canEat(unitList.get(unitToEat))) {
-                    eat(unitList.get(unitToEat));
+                Unit unit = getCurrentTile().getRandomUnit();
+                if (canEat(unit)) {
+                    eat(unit);
                     break;
                 }
             }
